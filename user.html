@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fc;
+        }
+
+        .navbar {
+            background: #111827;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        .welcome-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .welcome-card h1 {
+            margin-bottom: 10px;
+            color: #111827;
+        }
+
+        .order-form {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .order-form h2 {
+            margin-bottom: 20px;
+        }
+
+        .order-form input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 8px;
+            background: #f1f5f9;
+        }
+
+        .order-form button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #16a34a;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .orders-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            background: #111827;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        .status {
+            padding: 7px 14px;
+            border-radius: 20px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .accepted {
+            background: green;
+        }
+
+        .review {
+            background: blue;
+        }
+
+        .received {
+            background: orange;
+        }
+
+        .quality-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .quality-card {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .quality-card small {
+            color: gray;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <h2>Manufacturing Portal</h2>
+        <div style="display:flex; gap:10px;">
+            <button onclick="location.href='index3.html'" style="background:#16a34a;">Chat with AI</button>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="welcome-card">
+            <h1>Welcome User 👋</h1>
+            <p>Track and manage your manufacturing orders easily.</p>
+        </div>
+
+        <div class="order-form">
+            <h2>Place New Order</h2>
+            <input type="text" id="product" placeholder="Product Name">
+            <input type="text" id="material" placeholder="Material">
+            <input type="number" id="quantity" placeholder="Quantity">
+            <input type="date" id="deadline">
+            <button onclick="placeOrder()">Place Order</button>
+        </div>
+
+        <div class="orders-section">
+            <h2>My Orders</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Product</th>
+                        <th>Material</th>
+                        <th>Quantity</th>
+                        <th>Status</th>
+                        <th>Deadline</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTable"></tbody>
+            </table>
+        </div>
+
+        <div class="quality-section">
+            <h2>Quality Updates</h2>
+            <div class="quality-card">
+                <p>Order #1 passed visual inspection successfully.</p>
+                <small>07 May 2026</small>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let orderCount = 0;
+
+        async function fetchUserOrders() {
+            try {
+                const response = await fetch('/api/orders');
+                const orders = await response.json();
+                orderCount = orders.length;
+                const table = document.getElementById("ordersTable");
+                table.innerHTML = "";
+                orders.forEach(order => {
+                    const row = table.insertRow();
+                    row.innerHTML = `
+                        <td>${order.id}</td>
+                        <td>${order.part_name}</td>
+                        <td>${order.material}</td>
+                        <td>${order.quantity}</td>
+                        <td><span class="status ${(order.status || 'Received').toLowerCase()}">${order.status || 'Received'}</span></td>
+                        <td>${order.deadline}</td>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error fetching orders:', error);
+            }
+        }
+
+        async function placeOrder() {
+            const product = document.getElementById("product").value;
+            const material = document.getElementById("material").value;
+            const quantity = document.getElementById("quantity").value;
+            const deadline = document.getElementById("deadline").value;
+
+            if (!product || !material || !quantity || !deadline) {
+                alert("Please fill all fields");
+                return;
+            }
+
+            const newOrder = {
+                id: "ORD-" + String(orderCount + 1).padStart(3, '0'),
+                partName: product,
+                material: material,
+                quantity: parseInt(quantity),
+                deadline: deadline,
+                status: "Received"
+            };
+
+            try {
+                const res = await fetch("/api/orders", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(newOrder)
+                });
+
+                if (res.ok) {
+                    alert("Order Placed Successfully");
+                    fetchUserOrders();
+                    document.getElementById("product").value = "";
+                    document.getElementById("material").value = "";
+                    document.getElementById("quantity").value = "";
+                    document.getElementById("deadline").value = "";
+                }
+            } catch (err) {
+                console.error("Error:", err);
+            }
+        }
+
+        function logout() {
+            window.location.href = 'log_siign.html';
+        }
+
+        window.onload = fetchUserOrders;
+    </script>
+</body>
+
+</html>
