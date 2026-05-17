@@ -2,7 +2,7 @@
 
 Welcome to the **Nova Nexus** project! This is a full-stack web application designed to streamline manufacturing order management. It features a conversational AI assistant that extracts order details from natural language, an admin dashboard, user order tracking, and role-based authentication.
 
-## 🚀 Key Features
+##  Key Features
 
 1. **AI Chat Assistant (Nova)**
    - Powered by Hugging Face's Inference API, the assistant understands natural language inputs.
@@ -28,7 +28,7 @@ Welcome to the **Nova Nexus** project! This is a full-stack web application desi
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 | File / Folder | Purpose |
 | :--- | :--- |
@@ -44,7 +44,7 @@ Welcome to the **Nova Nexus** project! This is a full-stack web application desi
 
 ---
 
-## ⚙️ Installation & Setup
+##  Installation & Setup
 
 ### 1. Prerequisites
 - **Python 3.7+** installed on your machine.
@@ -73,7 +73,7 @@ HF_API_KEY=your_huggingface_api_key_here
 
 ---
 
-## ▶️ Running the Application
+##  Running the Application
 
 1. **Start the Flask Server**
    Run the following command in your terminal:
@@ -89,7 +89,7 @@ HF_API_KEY=your_huggingface_api_key_here
 
 ---
 
-## 🧠 How the AI Works (Behind the Scenes)
+##  How the AI Works (Behind the Scenes)
 When a user chats with Nova:
 1. The browser sends the chat history to the Flask server (`/api/chat`).
 2. Flask injects a strict **System Prompt** instructing the AI to act as a manufacturing assistant and extract specific data fields.
@@ -99,7 +99,7 @@ When a user chats with Nova:
 
 ---
 
-## 🚧 Challenges & Limitations
+##  Challenges & Limitations
 
 ### Local LLM Constraints (Ollama)
 - **Problem**: Early versions using local models (like Qwen3 9B via Ollama) were too slow for a fluid chat experience and required a powerful GPU.
